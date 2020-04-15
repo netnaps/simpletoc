@@ -71,8 +71,7 @@ function register_block()
 
     register_block_type('simpletoc/toc', [
     'editor_script' => 'simpletoc',
-    'editor_style' => 'simpletoc-editor',
-    'render_callback' => __NAMESPACE__ . '\\render_callback'
+    'editor_style' => 'simpletoc-editor'
    ]);
 
 }

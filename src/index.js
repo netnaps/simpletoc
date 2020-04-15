@@ -1,6 +1,5 @@
 const { __, setLocaleData } = wp.i18n;
 const { registerBlockType } = wp.blocks;
-
 const listul  = wp.element.createElement('svg',
 	{
 		width: 20,
@@ -12,7 +11,7 @@ const listul  = wp.element.createElement('svg',
 		}
 	)
 );
-import ServerSideRender from '@wordpress/server-side-render';
+
 
 registerBlockType( 'simpletoc/toc', {
 	title: __( 'SimpleTOC', 'simpletoc' ),
@@ -21,30 +20,53 @@ registerBlockType( 'simpletoc/toc', {
 	edit: function( props ) {
 			const data = wp.data.select( 'core/block-editor' );
 			const blocks = data.getBlocks();
-			//wp.data.dispatch( 'core/editor' ).editPost( { title: 'My New Title' } );
 			setHeadingAnchors(blocks);
-        return (
-					<p className={ props.className }>
-            <ServerSideRender
-                block="simpletoc/toc"
-                attributes={ props.attributes }
-            />
-					</p>
-        );
-
+			console.info(generateTOC(blocks));
+      return generateTOC(blocks);
     },
-	save: props => {
-		return null;
-	},
+	save: ( props ) => {
+			const data = wp.data.select( 'core/block-editor' );
+			const blocks = data.getBlocks();
+      return generateTOC(blocks);
+    },
 } );
 
+function generateTOC(blocks){
+	var div = document.createElement('div');
+	var ul = document.createElement('ul');
+	var h2 = document.createElement('h2');
+	var headline = __( 'Table of Contents', 'simpletoc' );
+  h2.appendChild(document.createTextNode(headline));
+
+	blocks.forEach(function (item,index){
+		var blockId = '';
+		var slug = '';
+
+		h2 = document.createTextNode(headline)
+		var title = '';
+		if ( item['name'] === 'core/heading' ) {
+			blockId = (item['clientId']);
+			title = item.attributes.content;
+			slug = item.attributes.content.toSlug();
+			var li = document.createElement('li');
+			li.appendChild(document.createTextNode(title));
+			ul.appendChild(li);
+		}
+	});
+
+	div.appendChild(h2);
+	div.appendChild(ul);
+
+	return div;
+}
+
 function setHeadingAnchors(blocks){
-	var headings = blocks.forEach(function (item,index){
+	blocks.forEach(function (item,index){
 			var blockId = '';
 			var slug = '';
 			if(item['name'] === 'core/heading'){
 				blockId = (item['clientId']);
-				console.info(blockId);
+
 				/* generate the slug for the anchor id */
 				slug = item.attributes.content.toSlug();
 				/* onyl set anchor if it isn't already defined */
@@ -52,7 +74,7 @@ function setHeadingAnchors(blocks){
 					wp.data.dispatch( 'core/editor' ).updateBlockAttributes( blockId, { anchor: slug } );
 				}
 			}
-	});
+		});
 }
 
 
