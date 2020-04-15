@@ -1,5 +1,6 @@
 const { __, setLocaleData } = wp.i18n;
 const { registerBlockType } = wp.blocks;
+
 const listul  = wp.element.createElement('svg',
 	{
 		width: 20,
@@ -18,6 +19,10 @@ registerBlockType( 'simpletoc/toc', {
 	icon: listul,
 	category: 'layout',
 	edit: function( props ) {
+			const data = wp.data.select( 'core/block-editor' );
+			const blocks = data.getBlocks();
+			//wp.data.dispatch( 'core/editor' ).editPost( { title: 'My New Title' } );
+			setHeadingAnchors(blocks);
         return (
 					<p className={ props.className }>
             <ServerSideRender
@@ -26,8 +31,52 @@ registerBlockType( 'simpletoc/toc', {
             />
 					</p>
         );
+
     },
 	save: props => {
 		return null;
 	},
 } );
+
+function setHeadingAnchors(blocks){
+	var headings = blocks.forEach(function (item,index){
+			var blockId = '';
+			var slug = '';
+			if(item['name'] === 'core/heading'){
+				blockId = (item['clientId']);
+				console.info(blockId);
+				/* generate the slug for the anchor id */
+				slug = item.attributes.content.toSlug();
+				/* onyl set anchor if it isn't already defined */
+				if(item.attributes.anchor === undefined){
+					wp.data.dispatch( 'core/editor' ).updateBlockAttributes( blockId, { anchor: slug } );
+				}
+			}
+	});
+}
+
+
+
+String.prototype.toSlug = function ()
+{
+	var str = this;
+	str = str.replace(/^\s+|\s+$/g, ''); // trim
+	str = str.toLowerCase();
+
+	// remove accents, swap ñ for n, etc
+	var from = "àáäâèéëêìíïîòóöôùúüûñçěščřžýúůďťň·/_,:;";
+	var to   = "aaaaeeeeiiiioooouuuuncescrzyuudtn------";
+
+	for (var i=0, l=from.length ; i<l ; i++)
+	{
+		str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+	}
+
+	str = str.replace('.', '-') // replace a dot by a dash
+		.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+		.replace(/\s+/g, '-') // collapse whitespace and replace by a dash
+		.replace(/-+/g, '-') // collapse dashes
+		.replace( /\//g, '' ); // collapse all forward-slashes
+
+	return str;
+}
