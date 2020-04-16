@@ -1,6 +1,6 @@
 const { __, setLocaleData } = wp.i18n;
 const { registerBlockType } = wp.blocks;
-const listul  = wp.element.createElement('svg',
+const listulicon  = wp.element.createElement('svg',
 	{
 		width: 20,
 		height: 20
@@ -14,17 +14,18 @@ const listul  = wp.element.createElement('svg',
 
 registerBlockType( 'simpletoc/toc', {
 	title: __( 'SimpleTOC', 'simpletoc' ),
-	icon: listul,
+	icon: listulicon,
 	category: 'layout',
-	edit: function( props ) {
-		return buildTOC(props);
+	edit: function ( props ) {
+		return buildTOC( props );
     },
-	save: ( props ) => {
-		return buildTOC(props);
+	save: function ( props ) {
+		return buildTOC( props );
     },
 } );
 
 function buildTOC(props){
+
 	const data = wp.data.select( 'core/block-editor' );
 	const blocks = data.getBlocks();
 	const headings = blocks.map( ( item, index ) => {

@@ -87,7 +87,7 @@ var _wp$i18n = wp.i18n,
     __ = _wp$i18n.__,
     setLocaleData = _wp$i18n.setLocaleData;
 var registerBlockType = wp.blocks.registerBlockType;
-var listul = wp.element.createElement('svg', {
+var listulicon = wp.element.createElement('svg', {
   width: 20,
   height: 20
 }, wp.element.createElement('path', {
@@ -95,7 +95,7 @@ var listul = wp.element.createElement('svg', {
 }));
 registerBlockType('simpletoc/toc', {
   title: __('SimpleTOC', 'simpletoc'),
-  icon: listul,
+  icon: listulicon,
   category: 'layout',
   edit: function edit(props) {
     return buildTOC(props);
