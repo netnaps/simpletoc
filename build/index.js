@@ -109,7 +109,13 @@ registerBlockType('simpletoc/toc', {
         }, item.attributes.content));
       }
     });
-    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", null, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", null, headings));
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+      className: props.className
+    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
+      class: "simpletoc-title"
+    }, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", {
+      class: "simpletoc"
+    }, headings));
   },
   save: function save(props) {
     var data = wp.data.select('core/block-editor');
@@ -122,37 +128,15 @@ registerBlockType('simpletoc/toc', {
         }, item.attributes.content));
       }
     });
-    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", null, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", null, headings));
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+      className: props.className
+    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
+      class: "simpletoc-title"
+    }, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", {
+      class: "simpletoc"
+    }, headings));
   }
 });
-
-function generateTOC(blocks) {
-  var div = document.createElement('div');
-  var ul = document.createElement('ul');
-  var h2 = document.createElement('h2');
-
-  var headline = __('Table of Contents', 'simpletoc');
-
-  h2.appendChild(document.createTextNode(headline));
-  blocks.forEach(function (item, index) {
-    var blockId = '';
-    var slug = '';
-    h2 = document.createTextNode(headline);
-    var title = '';
-
-    if (item.name === 'core/heading') {
-      blockId = item['clientId'];
-      title = item.attributes.content;
-      slug = item.attributes.content.toSlug();
-      var li = document.createElement('li');
-      li.appendChild(document.createTextNode(title));
-      ul.appendChild(li);
-    }
-  });
-  div.appendChild(h2);
-  div.appendChild(ul);
-  return div;
-}
 
 function setHeadingAnchors(blocks) {
   blocks.forEach(function (item, index) {

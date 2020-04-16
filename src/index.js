@@ -13,6 +13,7 @@ const listul  = wp.element.createElement('svg',
 );
 
 
+
 registerBlockType( 'simpletoc/toc', {
 	title: __( 'SimpleTOC', 'simpletoc' ),
 	icon: listul,
@@ -27,12 +28,12 @@ registerBlockType( 'simpletoc/toc', {
 				return <li><a href={slug}>{item.attributes.content}</a></li>;
 			}
 		} );
-		return <div>
-					 <h2>{ __( 'Table of Contents', 'simpletoc' ) }</h2>
-					 <ul>
+		return <p className={ props.className }>
+					 <h2 class="simpletoc-title">{ __( 'Table of Contents', 'simpletoc' ) }</h2>
+					 <ul class="simpletoc">
 							 {headings}
 					 </ul>
-			 </div>;
+			 </p>;
     },
 	save: ( props ) => {
 		const data = wp.data.select( 'core/block-editor' );
@@ -43,43 +44,14 @@ registerBlockType( 'simpletoc/toc', {
 				return <li><a href={slug}>{item.attributes.content}</a></li>;
 			}
 		} );
-		return <div>
-				<h2>{ __( 'Table of Contents', 'simpletoc' ) }</h2>
-				<ul>
+		return <p className={ props.className }>
+				<h2 class="simpletoc-title">{ __( 'Table of Contents', 'simpletoc' ) }</h2>
+				<ul class="simpletoc">
 						{headings}
 				</ul>
-		</div>;
+		</p>;
     },
 } );
-
-function generateTOC(blocks){
-	var div = document.createElement('div');
-	var ul = document.createElement('ul');
-	var h2 = document.createElement('h2');
-	var headline = __( 'Table of Contents', 'simpletoc' );
-  h2.appendChild(document.createTextNode(headline));
-
-	blocks.forEach(function (item,index){
-		var blockId = '';
-		var slug = '';
-
-		h2 = document.createTextNode(headline)
-		var title = '';
-		if ( item.name === 'core/heading' ) {
-			blockId = (item['clientId']);
-			title = item.attributes.content;
-			slug = item.attributes.content.toSlug();
-			var li = document.createElement('li');
-			li.appendChild(document.createTextNode(title));
-			ul.appendChild(li);
-		}
-	});
-
-	div.appendChild(h2);
-	div.appendChild(ul);
-
-	return div;
-}
 
 function setHeadingAnchors(blocks){
 	blocks.forEach(function (item,index){
