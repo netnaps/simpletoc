@@ -75,8 +75,13 @@
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 
 var _wp$i18n = wp.i18n,
     __ = _wp$i18n.__,
@@ -96,13 +101,28 @@ registerBlockType('simpletoc/toc', {
     var data = wp.data.select('core/block-editor');
     var blocks = data.getBlocks();
     setHeadingAnchors(blocks);
-    console.info(generateTOC(blocks));
-    return generateTOC(blocks);
+    var headings = blocks.map(function (item, index) {
+      if (item.name === 'core/heading') {
+        var slug = "#" + item.attributes.content.toSlug();
+        return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("li", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("a", {
+          href: slug
+        }, item.attributes.content));
+      }
+    });
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", null, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", null, headings));
   },
   save: function save(props) {
     var data = wp.data.select('core/block-editor');
     var blocks = data.getBlocks();
-    return generateTOC(blocks);
+    var headings = blocks.map(function (item, index) {
+      if (item.name === 'core/heading') {
+        var slug = "#" + item.attributes.content.toSlug();
+        return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("li", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("a", {
+          href: slug
+        }, item.attributes.content));
+      }
+    });
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", null, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", null, headings));
   }
 });
 
@@ -120,7 +140,7 @@ function generateTOC(blocks) {
     h2 = document.createTextNode(headline);
     var title = '';
 
-    if (item['name'] === 'core/heading') {
+    if (item.name === 'core/heading') {
       blockId = item['clientId'];
       title = item.attributes.content;
       slug = item.attributes.content.toSlug();
@@ -139,7 +159,7 @@ function setHeadingAnchors(blocks) {
     var blockId = '';
     var slug = '';
 
-    if (item['name'] === 'core/heading') {
+    if (item.name === 'core/heading') {
       blockId = item['clientId'];
       /* generate the slug for the anchor id */
 
@@ -176,6 +196,17 @@ String.prototype.toSlug = function () {
 
   return str;
 };
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!******************************************!*\
+  !*** external {"this":["wp","element"]} ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function() { module.exports = this["wp"]["element"]; }());
 
 /***/ })
 

@@ -18,16 +18,37 @@ registerBlockType( 'simpletoc/toc', {
 	icon: listul,
 	category: 'layout',
 	edit: function( props ) {
-			const data = wp.data.select( 'core/block-editor' );
-			const blocks = data.getBlocks();
-			setHeadingAnchors(blocks);
-			console.info(generateTOC(blocks));
-      return generateTOC(blocks);
+		const data = wp.data.select( 'core/block-editor' );
+		const blocks = data.getBlocks();
+		setHeadingAnchors(blocks);
+		const headings = blocks.map( ( item, index ) => {
+			if ( item.name === 'core/heading' ) {
+				var slug = "#" + item.attributes.content.toSlug();
+				return <li><a href={slug}>{item.attributes.content}</a></li>;
+			}
+		} );
+		return <div>
+					 <h2>{ __( 'Table of Contents', 'simpletoc' ) }</h2>
+					 <ul>
+							 {headings}
+					 </ul>
+			 </div>;
     },
 	save: ( props ) => {
-			const data = wp.data.select( 'core/block-editor' );
-			const blocks = data.getBlocks();
-      return generateTOC(blocks);
+		const data = wp.data.select( 'core/block-editor' );
+		const blocks = data.getBlocks();
+		const headings = blocks.map( ( item, index ) => {
+			if ( item.name === 'core/heading' ) {
+				var slug = "#" + item.attributes.content.toSlug();
+				return <li><a href={slug}>{item.attributes.content}</a></li>;
+			}
+		} );
+		return <div>
+				<h2>{ __( 'Table of Contents', 'simpletoc' ) }</h2>
+				<ul>
+						{headings}
+				</ul>
+		</div>;
     },
 } );
 
@@ -44,7 +65,7 @@ function generateTOC(blocks){
 
 		h2 = document.createTextNode(headline)
 		var title = '';
-		if ( item['name'] === 'core/heading' ) {
+		if ( item.name === 'core/heading' ) {
 			blockId = (item['clientId']);
 			title = item.attributes.content;
 			slug = item.attributes.content.toSlug();
@@ -64,9 +85,8 @@ function setHeadingAnchors(blocks){
 	blocks.forEach(function (item,index){
 			var blockId = '';
 			var slug = '';
-			if(item['name'] === 'core/heading'){
+			if(item.name === 'core/heading'){
 				blockId = (item['clientId']);
-
 				/* generate the slug for the anchor id */
 				slug = item.attributes.content.toSlug();
 				/* onyl set anchor if it isn't already defined */
