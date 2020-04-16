@@ -12,64 +12,42 @@ const listul  = wp.element.createElement('svg',
 	)
 );
 
-
-
 registerBlockType( 'simpletoc/toc', {
 	title: __( 'SimpleTOC', 'simpletoc' ),
 	icon: listul,
 	category: 'layout',
 	edit: function( props ) {
-		const data = wp.data.select( 'core/block-editor' );
-		const blocks = data.getBlocks();
-		setHeadingAnchors(blocks);
-		const headings = blocks.map( ( item, index ) => {
-			if ( item.name === 'core/heading' ) {
-				var slug = "#" + item.attributes.content.toSlug();
-				return <li><a href={slug}>{item.attributes.content}</a></li>;
-			}
-		} );
-		return <p className={ props.className }>
-					 <h2 class="simpletoc-title">{ __( 'Table of Contents', 'simpletoc' ) }</h2>
-					 <ul class="simpletoc">
-							 {headings}
-					 </ul>
-			 </p>;
+		return buildTOC(props);
     },
 	save: ( props ) => {
-		const data = wp.data.select( 'core/block-editor' );
-		const blocks = data.getBlocks();
-		const headings = blocks.map( ( item, index ) => {
-			if ( item.name === 'core/heading' ) {
-				var slug = "#" + item.attributes.content.toSlug();
-				return <li><a href={slug}>{item.attributes.content}</a></li>;
-			}
-		} );
-		return <p className={ props.className }>
-				<h2 class="simpletoc-title">{ __( 'Table of Contents', 'simpletoc' ) }</h2>
-				<ul class="simpletoc">
-						{headings}
-				</ul>
-		</p>;
+		return buildTOC(props);
     },
 } );
 
-function setHeadingAnchors(blocks){
-	blocks.forEach(function (item,index){
-			var blockId = '';
+function buildTOC(props){
+	const data = wp.data.select( 'core/block-editor' );
+	const blocks = data.getBlocks();
+	const headings = blocks.map( ( item, index ) => {
+		if ( item.name === 'core/heading' ) {
 			var slug = '';
-			if(item.name === 'core/heading'){
-				blockId = (item['clientId']);
-				/* generate the slug for the anchor id */
-				slug = item.attributes.content.toSlug();
-				/* onyl set anchor if it isn't already defined */
-				if(item.attributes.anchor === undefined){
-					wp.data.dispatch( 'core/editor' ).updateBlockAttributes( blockId, { anchor: slug } );
-				}
-			}
-		});
+			var hashslug = '';
+			var blockId = ( item.clientId );
+
+			slug = item.attributes.content.toSlug();
+			wp.data.dispatch( 'core/editor' ).updateBlockAttributes( blockId, { anchor: slug } );
+			hashslug = '#' + slug;
+
+			return <li><a href={hashslug}>{item.attributes.content}</a></li>;
+		}
+	} );
+
+	return <p className={ props.className }>
+			<h2 class="simpletoc-title">{ __( 'Table of Contents', 'simpletoc' ) }</h2>
+			<ul class="simpletoc">
+					{headings}
+			</ul>
+			</p>;
 }
-
-
 
 String.prototype.toSlug = function ()
 {

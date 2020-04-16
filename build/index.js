@@ -98,65 +98,38 @@ registerBlockType('simpletoc/toc', {
   icon: listul,
   category: 'layout',
   edit: function edit(props) {
-    var data = wp.data.select('core/block-editor');
-    var blocks = data.getBlocks();
-    setHeadingAnchors(blocks);
-    var headings = blocks.map(function (item, index) {
-      if (item.name === 'core/heading') {
-        var slug = "#" + item.attributes.content.toSlug();
-        return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("li", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("a", {
-          href: slug
-        }, item.attributes.content));
-      }
-    });
-    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
-      className: props.className
-    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
-      class: "simpletoc-title"
-    }, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", {
-      class: "simpletoc"
-    }, headings));
+    return buildTOC(props);
   },
   save: function save(props) {
-    var data = wp.data.select('core/block-editor');
-    var blocks = data.getBlocks();
-    var headings = blocks.map(function (item, index) {
-      if (item.name === 'core/heading') {
-        var slug = "#" + item.attributes.content.toSlug();
-        return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("li", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("a", {
-          href: slug
-        }, item.attributes.content));
-      }
-    });
-    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
-      className: props.className
-    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
-      class: "simpletoc-title"
-    }, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", {
-      class: "simpletoc"
-    }, headings));
+    return buildTOC(props);
   }
 });
 
-function setHeadingAnchors(blocks) {
-  blocks.forEach(function (item, index) {
-    var blockId = '';
-    var slug = '';
-
+function buildTOC(props) {
+  var data = wp.data.select('core/block-editor');
+  var blocks = data.getBlocks();
+  var headings = blocks.map(function (item, index) {
     if (item.name === 'core/heading') {
-      blockId = item['clientId'];
-      /* generate the slug for the anchor id */
-
+      var slug = '';
+      var hashslug = '';
+      var blockId = item.clientId;
       slug = item.attributes.content.toSlug();
-      /* onyl set anchor if it isn't already defined */
-
-      if (item.attributes.anchor === undefined) {
-        wp.data.dispatch('core/editor').updateBlockAttributes(blockId, {
-          anchor: slug
-        });
-      }
+      wp.data.dispatch('core/editor').updateBlockAttributes(blockId, {
+        anchor: slug
+      });
+      hashslug = '#' + slug;
+      return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("li", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("a", {
+        href: hashslug
+      }, item.attributes.content));
     }
   });
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+    className: props.className
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
+    class: "simpletoc-title"
+  }, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", {
+    class: "simpletoc"
+  }, headings));
 }
 
 String.prototype.toSlug = function () {
