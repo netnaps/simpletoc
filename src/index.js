@@ -16,15 +16,33 @@ registerBlockType( 'simpletoc/toc', {
 	title: __( 'SimpleTOC', 'simpletoc' ),
 	icon: listulicon,
 	category: 'layout',
+	attributes: {
+        headings: {
+            type: 'array'
+        },
+    },
 	edit: function ( props ) {
-		return buildTOC( props );
+		const headings = find_headings( props );
+		console.info(headings)
+		props.setAttributes( { headings: headings } );
+
+		return <Toc {...props} />;
     },
 	save: function ( props ) {
-		return buildTOC( props );
+		return <Toc  {...props} />;
     },
 } );
 
-function buildTOC(props){
+function Toc( props ) {
+	return <p className={ props.className }>
+			<h2 class="simpletoc-title">{ __( 'Table of Contents', 'simpletoc' ) }</h2>
+			<ul class="simpletoc">
+				{ props.headings }
+			</ul>
+			</p>;
+}
+
+function find_headings ( props ){
 
 	const data = wp.data.select( 'core/block-editor' );
 	const blocks = data.getBlocks();
@@ -35,19 +53,14 @@ function buildTOC(props){
 			var blockId = ( item.clientId );
 
 			slug = item.attributes.content.toSlug();
-			wp.data.dispatch( 'core/editor' ).updateBlockAttributes( blockId, { anchor: slug } );
+			//wp.data.dispatch( 'core/editor' ).updateBlockAttributes( blockId, { anchor: slug } );
 			hashslug = '#' + slug;
 
 			return <li><a href={hashslug}>{item.attributes.content}</a></li>;
 		}
 	} );
 
-	return <p className={ props.className }>
-			<h2 class="simpletoc-title">{ __( 'Table of Contents', 'simpletoc' ) }</h2>
-			<ul class="simpletoc">
-					{headings}
-			</ul>
-			</p>;
+	return {headings};
 }
 
 String.prototype.toSlug = function ()

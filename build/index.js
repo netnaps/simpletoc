@@ -97,15 +97,35 @@ registerBlockType('simpletoc/toc', {
   title: __('SimpleTOC', 'simpletoc'),
   icon: listulicon,
   category: 'layout',
+  attributes: {
+    headings: {
+      type: 'array'
+    }
+  },
   edit: function edit(props) {
-    return buildTOC(props);
+    var headings = find_headings(props);
+    console.info(headings);
+    props.setAttributes({
+      headings: headings
+    });
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(Toc, props);
   },
   save: function save(props) {
-    return buildTOC(props);
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(Toc, props);
   }
 });
 
-function buildTOC(props) {
+function Toc(props) {
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+    className: props.className
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
+    class: "simpletoc-title"
+  }, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", {
+    class: "simpletoc"
+  }, props.headings));
+}
+
+function find_headings(props) {
   var data = wp.data.select('core/block-editor');
   var blocks = data.getBlocks();
   var headings = blocks.map(function (item, index) {
@@ -113,23 +133,17 @@ function buildTOC(props) {
       var slug = '';
       var hashslug = '';
       var blockId = item.clientId;
-      slug = item.attributes.content.toSlug();
-      wp.data.dispatch('core/editor').updateBlockAttributes(blockId, {
-        anchor: slug
-      });
+      slug = item.attributes.content.toSlug(); //wp.data.dispatch( 'core/editor' ).updateBlockAttributes( blockId, { anchor: slug } );
+
       hashslug = '#' + slug;
       return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("li", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("a", {
         href: hashslug
       }, item.attributes.content));
     }
   });
-  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
-    className: props.className
-  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("h2", {
-    class: "simpletoc-title"
-  }, __('Table of Contents', 'simpletoc')), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", {
-    class: "simpletoc"
-  }, headings));
+  return {
+    headings: headings
+  };
 }
 
 String.prototype.toSlug = function () {
