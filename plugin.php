@@ -204,3 +204,14 @@ function generateToc($matches) {
     $html .= '<ul class="simpletoc">' . $list . "</li></ul>";
     return $html;
 }
+
+/**
+ * Filter to add plugin to the TOC list Support for Rank Math Seo Plugin.
+ *
+ * @param array TOC plugins.
+ */
+add_filter( 'rank_math/researches/toc_plugins', function( $toc_plugins ) {
+       $toc_plugins['simpletoc/plugin.php'] = 'simpletoc';
+    return $toc_plugins;
+   }
+  );
